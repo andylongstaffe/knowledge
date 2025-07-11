@@ -1,4 +1,6 @@
 
+## SSO
+
     aws configure list (~/.aws/config)
     aws configure sso
 
@@ -22,3 +24,14 @@ SSO registration scopes [sso:account:access]: <click enter>After code select: cl
 CLI default output format [None]:  json
 CLI profile name [infra-admin-700386920060]: ssodev
 ```
+
+## ECR
+
+    aws ecr get-login-password --profile ssodev --region us-east-1 | docker login --username AWS --password-stdin <id>.dkr.ecr.us-east-1.amazonaws.com
+
+Manifest is not reliable on Dev/QA (something to do with helm charts) so this can be used to check the current tagged version of a service on a given env:
+
+Checking deployed versioon
+
+    crane auth login 700386920060.dkr.ecr.us-east-1.amazonaws.com -u AWS -p $(aws ecr get-login-password --profile dev --region us-east-1)
+    crane config 700386920060.dkr.ecr.us-east-1.amazonaws.com/cbc/neo4j-connector:cbc-qa |  jq '.config.Labels' -r
